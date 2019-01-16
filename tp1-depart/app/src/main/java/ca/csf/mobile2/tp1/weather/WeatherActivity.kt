@@ -12,7 +12,7 @@ import android.widget.TextView
 import ca.csf.mobile2.tp1.R
 import kotlinx.android.synthetic.main.activity_weather.view.*
 
-class WeatherActivity : AppCompatActivity() {
+class WeatherActivity: AppCompatActivity(), IEventListener{
 
     private lateinit var temperatureTextView: TextView
     private lateinit var cityTextView: TextView
@@ -23,6 +23,7 @@ class WeatherActivity : AppCompatActivity() {
     private lateinit var retryButton: Button
 
     private var weatherWebService = WeatherWebService()
+    private var weather = Weather("error",0,"error")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,15 +37,24 @@ class WeatherActivity : AppCompatActivity() {
         errorTextView = findViewById(R.id.errorTextView)
         retryButton = findViewById(R.id.retryButton)
 
-        progressBar.visibility = View.VISIBLE
-        temperatureTextView.visibility = View.INVISIBLE
-        cityTextView.visibility = View.INVISIBLE
-        weatherPreviewImageView.visibility = View.INVISIBLE
-        errorImageView.visibility = View.INVISIBLE
-        errorTextView.visibility = View.INVISIBLE
-        retryButton.visibility = View.INVISIBLE
+        retryButton.setOnClickListener {
+            retryButton()
+        }
+
+        weatherWebService.registerToEvent(this)
 
         getWeather()
+    }
+
+    override fun onWeatherFetched(weather: Weather) {
+        this.weather = weather
+        applyWeatherInfo()
+        showWeather()
+    }
+
+    override fun onError(error:String){
+        applyErrorInfo(error)
+        showError()
     }
 
     private fun isConnectedToInternet() : Boolean{
@@ -52,12 +62,60 @@ class WeatherActivity : AppCompatActivity() {
     }
 
     private fun getWeather(){
+        showLoading()
         if(isConnectedToInternet()){
-            weatherWebService.callResquest()
+            weatherWebService.execute("https://m2t1.csfpwmjv.tk/api/v1/weather")
         }
         else{
-            // No internet connection error
+            applyErrorInfo("You are not connected to the internet")
+            showError()
         }
     }
+
+    private fun showWeather(){
+        progressBar.visibility = View.INVISIBLE
+        temperatureTextView.visibility = View.VISIBLE
+        cityTextView.visibility = View.VISIBLE
+        weatherPreviewImageView.visibility = View.VISIBLE
+        errorImageView.visibility = View.INVISIBLE
+        errorTextView.visibility = View.INVISIBLE
+        retryButton.visibility = View.INVISIBLE
+    }
+
+    private fun showLoading(){
+        progressBar.visibility = View.VISIBLE
+        temperatureTextView.visibility = View.INVISIBLE
+        cityTextView.visibility = View.INVISIBLE
+        weatherPreviewImageView.visibility = View.INVISIBLE
+        errorImageView.visibility = View.INVISIBLE
+        errorTextView.visibility = View.INVISIBLE
+        retryButton.visibility = View.INVISIBLE
+    }
+
+    private fun showError(){
+        progressBar.visibility = View.INVISIBLE
+        temperatureTextView.visibility = View.INVISIBLE
+        cityTextView.visibility = View.INVISIBLE
+        weatherPreviewImageView.visibility = View.INVISIBLE
+        errorImageView.visibility = View.VISIBLE
+        errorTextView.visibility = View.VISIBLE
+        retryButton.visibility = View.VISIBLE
+    }
+
+    private fun applyWeatherInfo(){
+        cityTextView.text = weather.city
+        temperatureTextView.text = weather.temperatureInCelsius.toString()
+        //TODO: Faire que l'image change selon le type soit SUNNY, PARTLY_SUNNY, CLOUDY, RAIN ou SNOW
+    }
+
+    private fun applyErrorInfo(error: String){
+        errorTextView.text = error
+    }
+
+    private fun retryButton(){
+        getWeather()
+    }
+
+
 
 }
