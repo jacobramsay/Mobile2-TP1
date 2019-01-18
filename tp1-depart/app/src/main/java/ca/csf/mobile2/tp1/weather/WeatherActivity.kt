@@ -43,16 +43,6 @@ class WeatherActivity: AppCompatActivity(), IEventListener{
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
 
-        if(language.equals("English")){
-            connectivityErrorString = getString(R.string.error_connectivityEN);
-            serverErrorString = getString(R.string.error_serverEN);
-            retryButton.setText(getString(R.string.text_retryEN));
-        }
-        else if(language.equals("French")){
-            connectivityErrorString = getString(R.string.error_connectivityFR);
-            serverErrorString = getString(R.string.error_connectivityEN);
-            retryButton.setText(getString(R.string.text_retryFR));
-        }
         temperatureTextView = findViewById(R.id.temperatureTextView)
         cityTextView = findViewById(R.id.cityTextView)
         weatherPreviewImageView = findViewById(R.id.weatherPreviewImageView)
@@ -63,6 +53,17 @@ class WeatherActivity: AppCompatActivity(), IEventListener{
 
         retryButton.setOnClickListener {
             retryButton()
+        }
+
+        if(language.equals("English")){
+            connectivityErrorString = getString(R.string.error_connectivityEN);
+            serverErrorString = getString(R.string.error_serverEN);
+            retryButton.setText(getString(R.string.text_retryEN));
+        }
+        else if(language.equals("French")){
+            connectivityErrorString = getString(R.string.error_connectivityFR);
+            serverErrorString = getString(R.string.error_connectivityEN);
+            retryButton.setText(getString(R.string.text_retryFR));
         }
 
         weatherWebService.registerToEvent(this)
