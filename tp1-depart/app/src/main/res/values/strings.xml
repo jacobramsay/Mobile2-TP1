@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="text_temperature">%d°</string>
-    <string name="error_connectivity">Oups…no internet connection.</string>
-    <string name="error_server">Oups…no weather available. Try again later.</string>
-    <string name="text_retry">Retry</string>
+    <string name="error_connectivityEN">Oups…no internet connection.</string>
+    <string name="error_connectivityFR">Oops...aucune connection internet.</string>
+    <string name="error_serverEN">Oups…no weather available. Try again later.</string>
+    <string name="error_serverFR">Oops...la météo n\'est pas disponible. Veuillez réessayer plus tard</string>
+    <string name="text_retryEN">Retry</string>
+    <string name="text_retryFR">Ressayer</string>
 </resources>
